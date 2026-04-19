@@ -8,6 +8,7 @@ services:
     volumes:
       - clickhouse_data:/var/lib/clickhouse
       - ./migrations:/docker-entrypoint-initdb.d
+      - ./clickhouse_users:/etc/clickhouse-server/users.d
     healthcheck:
       test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
       interval: 10s

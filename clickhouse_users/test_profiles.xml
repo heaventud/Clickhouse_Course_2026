@@ -1,0 +1,15 @@
+<clickhouse>
+    <profiles>
+        <baseline>
+            <max_threads>1</max_threads>
+            <max_memory_usage>2147483648</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+        </baseline>
+
+        <optimized>
+            <max_threads>4</max_threads>
+            <max_memory_usage>6442450944</max_memory_usage>
+            <use_uncompressed_cache>1</use_uncompressed_cache>
+        </optimized>
+    </profiles>
+</clickhouse>

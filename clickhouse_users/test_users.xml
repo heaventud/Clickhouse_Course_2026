@@ -1,0 +1,23 @@
+<clickhouse>
+    <users>
+        <baseline_user>
+            <password>baseline_pass</password>
+            <profile>baseline</profile>
+            <quota>default</quota>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <access_management>1</access_management>
+        </baseline_user>
+
+        <optimized_user>
+            <password>optimized_pass</password>
+            <profile>optimized</profile>
+            <quota>default</quota>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <access_management>1</access_management>
+        </optimized_user>
+    </users>
+</clickhouse>
