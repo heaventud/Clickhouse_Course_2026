@@ -1,6 +1,8 @@
 services:
   clickhouse:
-    image: clickhouse/clickhouse-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: clickhouse
     ports:
       - "8123:8123"
