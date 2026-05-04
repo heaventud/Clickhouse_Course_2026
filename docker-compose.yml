@@ -10,7 +10,10 @@ services:
     volumes:
       - clickhouse_data:/var/lib/clickhouse
       - ./migrations:/docker-entrypoint-initdb.d
-      - ./clickhouse_users:/etc/clickhouse-server/users.d
+      - ./clickhouse_extra:/etc/clickhouse-server/users.d
+      - ./clickhouse_server_extra:/etc/clickhouse-server/config.d
+      - ./clickhouse_udf:/etc/clickhouse-server/user_defined_executable_functions
+      - ./homework/task_5:/opt/clickhouse/udf
     healthcheck:
       test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
       interval: 10s

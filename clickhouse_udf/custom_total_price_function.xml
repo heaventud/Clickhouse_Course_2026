@@ -1,0 +1,19 @@
+<functions>
+    <function>
+        <type>executable</type>
+        <name>custom_total_price</name>
+        <return_type>Float64</return_type>
+        <argument>
+            <type>Float64</type>
+            <name>quantity</name>
+        </argument>
+        <argument>
+            <type>Float64</type>
+            <name>price</name>
+        </argument>
+        <format>TabSeparated</format>
+        <command>python3 /opt/clickhouse/udf/custom_total_price.py</command>
+        <execute_direct>0</execute_direct>
+        <deterministic>true</deterministic>
+    </function>
+</functions>

@@ -168,3 +168,7 @@ root@e740c77aac3e:/# which python3
 /usr/bin/python3
 root@e740c77aac3e:/# 
 ```
+
+#### Demo
+
+![Terminal](./task_5.gif)

@@ -1,0 +1,15 @@
+<functions>
+    <function>
+        <type>executable</type>
+        <name>transaction_category</name>
+        <return_type>String</return_type>
+        <argument>
+            <type>Float64</type>
+            <name>total_price</name>
+        </argument>
+        <format>TabSeparated</format>
+        <command>python3 /opt/clickhouse/udf/transaction_category.py</command>
+        <execute_direct>0</execute_direct>
+        <deterministic>true</deterministic>
+    </function>
+</functions>
