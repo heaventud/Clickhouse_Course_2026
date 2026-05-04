@@ -169,6 +169,48 @@ root@e740c77aac3e:/# which python3
 root@e740c77aac3e:/# 
 ```
 
+#### Declarations of custom functions
+
+```xml
+<functions>
+    <function>
+        <type>executable</type>
+        <name>custom_total_price</name>
+        <return_type>Float64</return_type>
+        <argument>
+            <type>Float64</type>
+            <name>quantity</name>
+        </argument>
+        <argument>
+            <type>Float64</type>
+            <name>price</name>
+        </argument>
+        <format>TabSeparated</format>
+        <command>python3 /opt/clickhouse/udf/custom_total_price.py</command>
+        <execute_direct>0</execute_direct>
+        <deterministic>true</deterministic>
+    </function>
+</functions>
+```
+
+```xml
+<functions>
+    <function>
+        <type>executable</type>
+        <name>transaction_category</name>
+        <return_type>String</return_type>
+        <argument>
+            <type>Float64</type>
+            <name>total_price</name>
+        </argument>
+        <format>TabSeparated</format>
+        <command>python3 /opt/clickhouse/udf/transaction_category.py</command>
+        <execute_direct>0</execute_direct>
+        <deterministic>true</deterministic>
+    </function>
+</functions>
+```
+
 #### Demo
 
 ![Terminal](./task_5.gif)
