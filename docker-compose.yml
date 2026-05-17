@@ -14,6 +14,7 @@ services:
       - ./clickhouse_server_extra:/etc/clickhouse-server/config.d
       - ./clickhouse_udf:/etc/clickhouse-server/user_defined_executable_functions
       - ./homework/task_5:/opt/clickhouse/udf
+      - ./homework/task_8:/var/lib/clickhouse/user_files
     healthcheck:
       test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
       interval: 10s
