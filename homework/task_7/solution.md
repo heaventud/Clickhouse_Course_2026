@@ -34,7 +34,7 @@ SELECT
 FROM movies AS m
 CROSS JOIN genres AS g;
 ```
-4. Match movies with their genres not using JOINs
+4. Match movies with their genres not using INNER JOIN
 
 ```sql
 SELECT
