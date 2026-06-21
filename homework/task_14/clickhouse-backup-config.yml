@@ -1,0 +1,18 @@
+general:
+  remote_storage: s3
+
+clickhouse:
+  username: default
+  password: ""
+  host: clickhouse
+  port: 9000
+
+s3:
+  access_key: clickhouse
+  secret_key: clickhouse_secret
+  bucket: clickhouse
+  endpoint: http://s3:10000
+  region: us-east-1
+  disable_ssl: true
+  force_path_style: true
+  path: ""

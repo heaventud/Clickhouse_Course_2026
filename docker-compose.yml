@@ -4,17 +4,22 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: clickhouse
+    depends_on:
+      createbuckets:
+        condition: service_completed_successfully
     ports:
       - "8123:8123"
       - "9000:9000"
     volumes:
+      - ./homework/task_14/config.xml:/etc/clickhouse-server/config.d/extra.xml
       - clickhouse_data:/var/lib/clickhouse
       - ./migrations:/docker-entrypoint-initdb.d
       - ./clickhouse_extra:/etc/clickhouse-server/users.d
-      - ./clickhouse_server_extra:/etc/clickhouse-server/config.d
-      - ./clickhouse_udf:/etc/clickhouse-server/user_defined_executable_functions
-      - ./homework/task_5:/opt/clickhouse/udf
-      - ./homework/task_8:/var/lib/clickhouse/user_files
+      - ./homework/task_14/clickhouse-backup-config.yml:/opt/clickhouse/clickhouse-backup-config.yml
+#      - ./clickhouse_server_extra:/etc/clickhouse-server/config.d
+#      - ./clickhouse_udf:/etc/clickhouse-server/user_defined_executable_functions
+#      - ./homework/task_5:/opt/clickhouse/udf
+#      - ./homework/task_8:/var/lib/clickhouse/user_files
     healthcheck:
       test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
       interval: 10s
@@ -23,5 +28,39 @@ services:
       start_period: 20s
     restart: unless-stopped
 
+  s3:
+    image: minio/minio:latest
+    container_name: s3
+    environment:
+      MINIO_ROOT_USER: clickhouse
+      MINIO_ROOT_PASSWORD: clickhouse_secret
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+    command: server /data --address :10000 --console-address :10001
+    volumes:
+      - s3_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:10000/minio/health/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      s3:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://s3:10000 clickhouse clickhouse_secret;
+      /usr/bin/mc admin info myminio;
+      /usr/bin/mc mb --ignore-existing myminio/clickhouse;
+      /usr/bin/mc anonymous set public myminio/clickhouse;
+      exit 0;
+      "
+
 volumes:
   clickhouse_data:
+  s3_data:

@@ -5,3 +5,8 @@ RUN apt-get update \
     && pip3 install clickhouse-driver
 
 RUN mkdir -p /opt/clickhouse/udf
+
+RUN wget https://github.com/Altinity/clickhouse-backup/releases/download/v2.7.2/clickhouse-backup_2.7.2_arm64.deb -O clickhouse-backup_2.7.2_arm64.deb \
+    && dpkg -i clickhouse-backup_2.7.2_arm64.deb \
+	&& rm clickhouse-backup_2.7.2_arm64.deb \
+    && mv /etc/clickhouse-backup/config.yml.example /etc/clickhouse-backup/config.yml
