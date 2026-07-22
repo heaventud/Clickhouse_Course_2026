@@ -4,18 +4,16 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: clickhouse
-    depends_on:
-      createbuckets:
-        condition: service_completed_successfully
     ports:
       - "8123:8123"
       - "9000:9000"
     volumes:
-      - ./homework/task_14/config.xml:/etc/clickhouse-server/config.d/extra.xml
+#      - ./homework/task_14/config.xml:/etc/clickhouse-server/config.d/extra.xml
+      - ./homework/task_18/config.xml:/etc/clickhouse-server/config.d/kafka.xml
       - clickhouse_data:/var/lib/clickhouse
       - ./migrations:/docker-entrypoint-initdb.d
       - ./clickhouse_extra:/etc/clickhouse-server/users.d
-      - ./homework/task_14/clickhouse-backup-config.yml:/opt/clickhouse/clickhouse-backup-config.yml
+#     - ./homework/task_14/clickhouse-backup-config.yml:/opt/clickhouse/clickhouse-backup-config.yml
 #      - ./clickhouse_server_extra:/etc/clickhouse-server/config.d
 #      - ./clickhouse_udf:/etc/clickhouse-server/user_defined_executable_functions
 #      - ./homework/task_5:/opt/clickhouse/udf
@@ -60,6 +58,33 @@ services:
       /usr/bin/mc anonymous set public myminio/clickhouse;
       exit 0;
       "
+
+  zookeeper:
+    platform: linux/x86_64
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+
+  kafka:
+    platform: linux/x86_64
+    container_name: kafka1
+    hostname: kafka1
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_BROKER_ID: 1
 
 volumes:
   clickhouse_data:
