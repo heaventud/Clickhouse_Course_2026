@@ -33,6 +33,8 @@ services:
     environment:
       MINIO_ROOT_USER: clickhouse
       MINIO_ROOT_PASSWORD: clickhouse_secret
+    profiles:
+      - donotstart
     ports:
       - "10000:10000"
       - "10001:10001"
@@ -48,6 +50,8 @@ services:
 
   createbuckets:
     image: minio/mc
+    profiles:
+      - donotstart
     depends_on:
       s3:
         condition: service_healthy
@@ -74,6 +78,8 @@ services:
     container_name: kafka1
     hostname: kafka1
     image: confluentinc/cp-kafka:latest
+    profiles:
+      - donotstart
     depends_on:
       - zookeeper
     ports:
@@ -86,6 +92,41 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_BROKER_ID: 1
+
+  postgres:
+    platform: linux/x86_64
+    image: aa8y/postgres-dataset:dellstore
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "psql", "-d", "dellstore", "-c", "SELECT 1 FROM pg_database WHERE datname = 'dellstore';" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  airflow-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    container_name: airflow-worker
+    hostname: airflow-worker
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW_CONN_POSTGRES_DELLSTORE=postgres://postgres:postgres@postgres:5432/dellstore
+      - AIRFLOW_CONN_CLICKHOUSE_DEFAULT=clickhouse://baseline_user:baseline_pass@clickhouse/default
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./homework/task_17/airflow:/opt/airflow/dags
 
 volumes:
   clickhouse_data:

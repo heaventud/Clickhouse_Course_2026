@@ -1,0 +1,9 @@
+FROM python:3.13-slim
+
+RUN pip install apache-airflow[postgres] apache-airflow-providers-clickhousedb
+
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8080
+
+CMD ["airflow", "standalone"]
