@@ -1,0 +1,12 @@
+<clickhouse>
+    <named_collections>
+        <pgdata>
+            <user>baseline_user</user>
+            <password>baseline_pass</password>
+            <host>postgres</host>
+            <port>5432</port>
+            <database>dellstore</database>
+            <schema>public</schema>
+        </pgdata>
+    </named_collections>
+</clickhouse>

@@ -11,6 +11,7 @@ services:
     volumes:
 #      - ./homework/task_14/config.xml:/etc/clickhouse-server/config.d/extra.xml
       - ./homework/task_18/config.xml:/etc/clickhouse-server/config.d/kafka.xml
+      - ./homework/task_20/named_collections.xml:/etc/clickhouse-server/config.d/named_collections.xml
       - clickhouse_data:/var/lib/clickhouse
       - ./migrations:/docker-entrypoint-initdb.d
       - ./clickhouse_extra:/etc/clickhouse-server/users.d
