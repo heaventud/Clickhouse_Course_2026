@@ -6,8 +6,8 @@ Credentials in named collection in clickhouse to integrate with Postgres
 <clickhouse>
     <named_collections>
         <pgdata>
-            <user>postgres</user>
-            <password>postgres</password>
+            <user>baseline_user</user>
+            <password>baseline_pass</password>
             <host>postgres</host>
             <port>5432</port>
             <database>dellstore</database>
