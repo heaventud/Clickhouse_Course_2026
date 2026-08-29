@@ -1,0 +1,38 @@
+services:
+  clickhouse-01:
+    image: "clickhouse/clickhouse-server"
+    user: "101:101"
+    container_name: clickhouse-01
+    hostname: clickhouse-01
+    volumes:
+      - ./clickhouse_cluster/clickhouse-01/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./clickhouse_cluster/clickhouse-01/users.xml:/etc/clickhouse-server/users.d/users.xml
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    depends_on:
+      - clickhouse-keeper
+
+  clickhouse-02:
+    image: "clickhouse/clickhouse-server"
+    user: "101:101"
+    container_name: clickhouse-02
+    hostname: clickhouse-02
+    volumes:
+      - ./clickhouse_cluster/clickhouse-02/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./clickhouse_cluster/clickhouse-02/users.xml:/etc/clickhouse-server/users.d/users.xml
+    ports:
+      - "8124:8123"
+      - "9001:9000"
+    depends_on:
+      - clickhouse-keeper
+
+  clickhouse-keeper:
+    image: "clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}"
+    user: "101:101"
+    container_name: clickhouse-keeper
+    hostname: clickhouse-keeper
+    volumes:
+     - ./clickhouse_cluster/clickhouse-keeper/config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    ports:
+        - "9181:9181"
