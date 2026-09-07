@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  clickhouse_server:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-server
+    ports:
+      - "8123:8123" # HTTP port
+      - "9000:9000" # Native TCP port
+    volumes:
+      - ./clickhouse_extra:/etc/clickhouse-server/users.d
+    healthcheck:
+      test: ["CMD-SHELL", "clickhouse-client --query 'SELECT 1' 2>&1 | grep -q '1'"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  superset:
+    image: apache/superset:latest
+    container_name: superset
+    depends_on:
+      - postgres
+      - clickhouse_server
+    ports:
+      - "8091:8091"
+    environment:
+      - SUPERSET_DB_URI=postgresql://superset:superset@postgres:5432/superset
+      - SUPERSET_SECRET_KEY=your_secret_key # Change this!
+    volumes:
+      - superset_data:/app/superset_home
+    command: >
+      bash -c "
+      uv pip install ".[clickhouse]";
+      superset db upgrade;
+      superset init;
+      superset run -p 8091 --with-threads --reload --debugger --host=0.0.0.0;
+      
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8091/health | grep -q 'OK'"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=superset
+      - POSTGRES_PASSWORD=superset
+      - POSTGRES_DB=superset
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U superset -d superset"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  superset_data:
+  postgres_data:
