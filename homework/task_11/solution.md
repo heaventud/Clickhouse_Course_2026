@@ -123,7 +123,7 @@
 
 ### Docker-compose file
 
-[../../docker-compose.s]()
+[docker-compose.shards.yml](../../docker-compose.shards.yml)
 
 local table
 
